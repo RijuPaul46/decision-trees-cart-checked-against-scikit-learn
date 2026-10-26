@@ -21,8 +21,28 @@ def gini(y):
     return gni
     pass
 
-# Step 2 - best_split (not yet solved)
-# TODO: implement
+# Step 2 - best_split
+def best_split(X, y):
+    # TODO: exhaustive search over features and midpoint thresholds; return (feature, threshold, gain).
+    parent_score=gini(y)
+    best_threshold=None
+    best_feature=None
+    gain=0.0
+    n_sample,n_feature=X.shape
+    for j in range(n_feature):
+        col=sorted(set(X[:,j]))
+        for i in range(1,len(col)):
+            threshold=float((col[i]+col[i-1])/2)
+            left=y[X[:,j]<=threshold]
+            right=y[X[:,j]>threshold]
+            left_gini=gini(left)
+            right_gini=gini(right)
+            score=float(parent_score-((len(left)*left_gini) +len(right)*right_gini)/n_sample)
+            if score>gain:
+                best_threshold=threshold
+                best_feature=j
+                gain=score
+    return (best_feature,best_threshold,gain)
 
 # Step 3 - grow_tree (not yet solved)
 # TODO: implement
