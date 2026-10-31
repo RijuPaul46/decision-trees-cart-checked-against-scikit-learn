@@ -47,8 +47,83 @@ def best_split(X, y):
                 gain=score
     return (best_feature,best_threshold,gain)
 
-# Step 3 - grow_tree (not yet solved)
-# TODO: implement
+# Step 3 - grow_tree
+def majority_class(y):
+    classes,counts=np.unique(y,return_counts=True)
+    return classes[np.argmax(counts)]
+def helper_best_split(X,y,MIN_SAMPLE_LEAF=1):
+    parent_score=gini(y)
+    best_threshold=None
+    best_feature=None
+    gain=0.0
+    n_sample,n_feature=X.shape
+    for j in range(n_feature):
+        col=sorted(set(X[:,j]))
+        for i in range(1,len(col)):
+            threshold=float((col[i]+col[i-1])/2)
+            left=y[X[:,j]<=threshold]
+            right=y[X[:,j]>threshold]
+            if len(left)<MIN_SAMPLE_LEAF or len(right)<MIN_SAMPLE_LEAF:
+                continue
+            left_gini=gini(left)
+            right_gini=gini(right)
+            score=float(parent_score-((len(left)*left_gini) +len(right)*right_gini)/n_sample)
+            if score>gain:
+                best_threshold=threshold
+                best_feature=j
+                gain=score
+    return (best_feature,best_threshold,gain)
+def grow_tree(X, y, max_depth=2, min_samples_leaf=1, depth=0):
+    # TODO: recursive CART with nested dicts; leaves hold the majority class.
+    majority=int(majority_class(y))
+    gini_score=gini(y)
+    
+    #pure class no need to split more 
+    if gini_score==0:
+        
+        
+        tree={
+            "leaf":True,
+            "value":majority,
+            "n":len(y)
+        }
+        return tree
+    #max depth reached
+    if depth>=max_depth:
+        return {
+            "left":True,
+            "value":majority,
+            "n":len(y)
+        }
+    
+
+    best_feature,best_threshold,gain=helper_best_split(X,y,min_samples_leaf)
+
+    if best_feature is None or gain<=0:
+        tree={
+            "leaf":True,
+            "value":majority,
+            "n":len(y)
+        }
+        return tree
+    #select all row where X[best_feature]<=threshold
+    row_mask_left=X[:,best_feature]<=best_threshold
+    row_mask_right=X[:,best_feature]>best_threshold
+    left_X=X[row_mask_left]
+    left_y=y[row_mask_left]
+    right_X=X[row_mask_right]
+    right_y=y[row_mask_right]
+
+    tree={
+        "leaf":False,
+        "feature":best_feature,
+        "threshold":best_threshold,
+        "n": len(X),
+        "left":grow_tree(left_X,left_y,max_depth,min_samples_leaf,depth+1),
+        "right":grow_tree(right_X,right_y,max_depth,min_samples_leaf,depth+1)
+    }
+    return tree
+    pass
 
 # Step 4 - predict_tree (not yet solved)
 # TODO: implement
