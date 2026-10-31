@@ -91,7 +91,7 @@ def grow_tree(X, y, max_depth=2, min_samples_leaf=1, depth=0):
     #max depth reached
     if depth>=max_depth:
         return {
-            "left":True,
+            "leaf":True,
             "value":majority,
             "n":len(y)
         }
@@ -125,8 +125,23 @@ def grow_tree(X, y, max_depth=2, min_samples_leaf=1, depth=0):
     return tree
     pass
 
-# Step 4 - predict_tree (not yet solved)
-# TODO: implement
+# Step 4 - predict_tree
+def predict_for_row(tree,x):
+    if tree['leaf']:
+        return tree['value']
+    feature=tree['feature']
+    threshold=tree['threshold']
+    if x[feature]<=threshold:
+        return predict_for_row(tree['left'],x)
+    return int(predict_for_row(tree['right'],x))
+    
+def predict_tree(tree, X):
+    # TODO: walk the dict tree per row; return an int array of leaf values.
+    predictions=np.zeros(len(X),dtype=int)
+    for i,x in enumerate(X):
+        predictions[i]=int((predict_for_row(tree,x)))
+    return predictions
+    pass
 
 # Step 5 - fit_sklearn_tree (not yet solved)
 # TODO: implement
