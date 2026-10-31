@@ -22,6 +22,7 @@ def gini(y):
     pass
 
 # Step 2 - best_split
+MIN_SAMPLE_LEAF=1
 def best_split(X, y):
     # TODO: exhaustive search over features and midpoint thresholds; return (feature, threshold, gain).
     parent_score=gini(y)
@@ -35,6 +36,8 @@ def best_split(X, y):
             threshold=float((col[i]+col[i-1])/2)
             left=y[X[:,j]<=threshold]
             right=y[X[:,j]>threshold]
+            if len(left)<MIN_SAMPLE_LEAF or len(right)<MIN_SAMPLE_LEAF:
+                continue
             left_gini=gini(left)
             right_gini=gini(right)
             score=float(parent_score-((len(left)*left_gini) +len(right)*right_gini)/n_sample)
