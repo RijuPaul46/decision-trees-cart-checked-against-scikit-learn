@@ -331,8 +331,17 @@ def regression_tree(X, y, max_depth=2, random_state=42):
     }
     pass
 
-# Step 12 - tree_rules (not yet solved)
-# TODO: implement
+# Step 12 - tree_rules
+from sklearn.tree import export_text
+def tree_rules(clf, feature_names):
+    # TODO: sklearn.tree.export_text with the given feature names.
+    text=export_text(
+        clf,
+        feature_names=list(feature_names)
+    )
+    
+    return text
+    pass
 
 # Step 13 - save_and_reload_tree (not yet solved)
 # TODO: implement
