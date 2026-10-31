@@ -175,8 +175,43 @@ def sklearn_splits(clf):
 
     pass
 
-# Step 7 - compare_trees (not yet solved)
-# TODO: implement
+# Step 7 - compare_trees
+def get_my_split(tree):
+    result=[]
+    if tree['leaf']:
+        return result
+    result.append(
+        (
+            int(tree['feature']),
+            round(float(tree['threshold']),3)
+        )
+    )
+    result.extend(get_my_split(tree['left']))
+    result.extend(get_my_split(tree['right']))
+    return result
+def compare_trees(X, y, max_depth=2):
+    # TODO: {'same_splits': bool, 'agreement': float, 'my_splits': [(feature, threshold), ...]}.
+    my_tree=grow_tree(X,y,min_samples_leaf=1,max_depth=max_depth,depth=0)
+    model=fit_sklearn_tree(X,y,max_depth=max_depth)
+    sk_tree=model.fit(X,y)
+
+    my_prediction=predict_tree(my_tree,X)
+    sk_prediction=sk_tree.predict(X)
+
+    my_split=get_my_split(my_tree)
+    sk_split=sklearn_splits(model)
+
+    agreement=((my_prediction==sk_prediction).mean())
+    same_split=(my_split==sk_split)
+    return {
+        
+        "same_splits":same_split,
+        "agreement":agreement,
+        "my_splits":my_split
+    }
+    
+
+    pass
 
 # Step 8 - moons_data (not yet solved)
 # TODO: implement
