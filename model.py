@@ -339,7 +339,7 @@ def tree_rules(clf, feature_names):
         clf,
         feature_names=list(feature_names)
     )
-    
+    print(text)
     return text
     pass
 
@@ -355,6 +355,10 @@ def save_and_reload_tree(clf, path):
     return loaded_model
     pass
 
-# Step 14 - predict_species (not yet solved)
-# TODO: implement
+# Step 14 - predict_species
+def predict_species(clf, measurements, target_names):
+    # TODO: predict on the raw measurements and return class names as strings.
+    predictions=clf.predict(measurements)
+    return [str(target_names[label]) for label in predictions]
+    pass
 
