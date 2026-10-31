@@ -343,8 +343,17 @@ def tree_rules(clf, feature_names):
     return text
     pass
 
-# Step 13 - save_and_reload_tree (not yet solved)
-# TODO: implement
+# Step 13 - save_and_reload_tree
+import joblib
+def save_and_reload_tree(clf, path):
+    # TODO: joblib.dump then joblib.load; return the reloaded model.
+    joblib.dump(
+        clf,
+        path
+    )
+    loaded_model=joblib.load(path)
+    return loaded_model
+    pass
 
 # Step 14 - predict_species (not yet solved)
 # TODO: implement
